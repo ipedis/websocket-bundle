@@ -1,0 +1,198 @@
+<?php
+namespace Ipedis\Bundle\Websocket\Service\Topic;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Ipedis\Bundle\Websocket\Service\Logger\WebsocketEventLogger;
+use Ratchet\ConnectionInterface;
+use Ratchet\Wamp\Topic;
+
+class TopicManager
+{
+    const PING_TOPIC = 'ping';
+
+    /**
+     * @var iterable
+     */
+    protected $channels;
+
+    /**
+     * @var WebsocketEventLogger
+     */
+    protected $logger;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $em;
+
+    public function __construct(
+        iterable $channels,
+        WebsocketEventLogger $logger,
+        EntityManagerInterface $em
+    ) {
+        $this->em = $em;
+        $this->channels = $channels;
+        $this->logger = $logger;
+    }
+
+    /**
+     * A request to subscribe to a topic has been made.
+     *
+     * @param \Ratchet\ConnectionInterface $conn
+     * @param string|Topic                 $topic The topic to subscribe to
+     */
+    public function onSubscribe(ConnectionInterface $conn, $topic)
+    {
+        /*
+         * Refresh connection if timeout
+         */
+        $this->refreshDbConnection();
+
+        /*
+         * Log incoming request
+         */
+        $this->logger->writeInfo(sprintf('Received subscribe request for topic {%s}', $topic->getId()));
+
+        foreach ($this->channels as $channel) {
+            /*
+             * Delegate responsibility to channels matching topic id
+             */
+            if (preg_match(sprintf('#%s#', $channel->getBasePattern()), $topic->getId())) {
+                /*
+                 * Persist subscriber
+                 */
+                $channel->persistTopic($topic->getId(), $topic);
+
+                /*
+                 * Delegate logic to channel
+                 */
+                $channel->onSubscribe($conn, $topic);
+            }
+        }
+    }
+
+    /**
+     * A client is attempting to publish content to a subscribed connections on a URI.
+     *
+     * @param \Ratchet\ConnectionInterface $conn
+     * @param string|Topic                 $topic    The topic the user has attempted to publish to
+     * @param string                       $event    Payload of the publish
+     * @param array                        $exclude  A list of session IDs the message should be excluded from (blacklist)
+     * @param array                        $eligible A list of session Ids the message should be send to (whitelist)
+     */
+    public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible)
+    {
+        /*
+         * Refresh connection if timeout
+         */
+        $this->refreshDbConnection();
+
+        /*
+         * Log incoming request
+         */
+        $this->logger->writeInfo(sprintf('Received publish request for topic {%s}', $topic->getId()));
+
+        /*
+         * Pinging websocket to keep connection alive
+         */
+        if (self::PING_TOPIC === $topic->getId()) {
+            // Ping
+            $conn->event($topic->getId(), json_encode(['message' => 'pong']));
+
+            return;
+        }
+
+        /*
+         * Transform event payload to array.
+         */
+        if (is_array($event)) {  // Front send array of string we he want to regenerate.
+            $payload = $event;
+        } else { // Worker send json string.
+            $payload = json_decode($event, true);
+        }
+
+        foreach ($this->channels as $channel) {
+            /*
+             * Delegate responsibility to channels matching topic id
+             */
+            if (preg_match(sprintf('#%s#', $channel->getBasePattern()), $topic->getId())) {
+                $channel->onPublish($conn, $topic, $payload);
+            }
+        }
+    }
+
+    /**
+     * If there is an error with one of the sockets, or somewhere in the application where an Exception is thrown,
+     * the Exception is sent back down the stack, handled by the Server and bubbled back up the application through this method.
+     *
+     * @param ConnectionInterface $conn
+     * @param \Exception          $e
+     *
+     * @throws \Exception
+     */
+    public function onError(ConnectionInterface $conn, \Exception $e)
+    {
+        $this->logger->writeError(sprintf('Websocket got error: %s', $e));
+    }
+
+    /**
+     * An RPC call has been received.
+     *
+     * @param \Ratchet\ConnectionInterface $conn
+     * @param string                       $id     The unique ID of the RPC, required to respond to
+     * @param string|Topic                 $topic  The topic to execute the call against
+     * @param array                        $params Call parameters received from the client
+     */
+    public function onCall(ConnectionInterface $conn, $id, $topic, array $params)
+    {
+        $conn->callError($id, $topic, 'RPC not supported');
+    }
+
+    /**
+     * When a new connection is opened it will be passed to this method.
+     *
+     * @param ConnectionInterface $conn The socket/connection that just connected to your application
+     *
+     * @throws \Exception
+     */
+    public function onOpen(ConnectionInterface $conn)
+    {
+    }
+
+    /**
+     * This is called before or after a socket is closed (depends on how it's closed).  SendMessage to $conn will not result in an error if it has already been closed.
+     *
+     * @param ConnectionInterface $conn The socket/connection that is closing/closed
+     *
+     * @throws \Exception
+     */
+    public function onClose(ConnectionInterface $conn)
+    {
+    }
+
+    /**
+     * A request to unsubscribe from a topic has been made.
+     * No need to anything, since WampServer adds and removes subscribers to Topics automatically.
+     *
+     * @param \Ratchet\ConnectionInterface $conn
+     * @param string|Topic                 $topic The topic to unsubscribe from
+     */
+    public function onUnSubscribe(ConnectionInterface $conn, $topic)
+    {
+    }
+
+    /**
+     * Refresh db connection.
+     */
+    protected function refreshDbConnection()
+    {
+        $this->logger->writeInfo(sprintf('Database connection status %s', $this->em->getConnection()->isConnected()));
+
+        if (false === $this->em->getConnection()->ping()) {
+            $this->em->getConnection()->close();
+            $this->em->getConnection()->connect();
+
+            $this->logger->writeInfo('Database connection reset');
+        }
+    }
+}
