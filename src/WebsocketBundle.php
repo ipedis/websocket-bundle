@@ -1,6 +1,7 @@
 <?php
+namespace Ipedis\Bundle\Websocket;
 
-
+use Ipedis\Bundle\Websocket\DependencyInjection\WebsocketExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class WebsocketBundle extends Bundle
