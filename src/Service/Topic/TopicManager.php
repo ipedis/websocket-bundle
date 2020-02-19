@@ -33,6 +33,7 @@ class TopicManager
         $this->em = $em;
         $this->channels = $channels;
         $this->logger = $logger;
+
     }
 
     /**
