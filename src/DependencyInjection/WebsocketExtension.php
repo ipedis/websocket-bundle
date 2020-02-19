@@ -24,7 +24,6 @@ class WebsocketExtension extends Extension
         );
 
         $loader->load('services.yaml');
-        $loader->load('packages/main/logger/monolog.yaml');
 
         $this->addWebsocketChannelTag($container);
     }
