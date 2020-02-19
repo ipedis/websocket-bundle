@@ -1,0 +1,26 @@
+{
+  "name": "ipedis/websocket-client-bundle",
+  "description": "Symfony bundle for websocket usage on publispeak",
+  "type": "library",
+  "authors": [
+    {
+      "name": "gabriel",
+      "email": "gabriel@ipedis.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">7.2.0",
+    "symfony/dependency-injection": "^4.0.10 || ^5.0",
+    "symfony/config": "~4.0 || ^5.0",
+    "symfony/console": "~4.0 || ^5.0",
+    "symfony/http-kernel": "~4.0 || ^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ipedis\\Bundle\\Websocket\\": "src/"
+    }
+  },
+  "repositories": [
+  ]
+}
