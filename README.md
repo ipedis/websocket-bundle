@@ -92,5 +92,5 @@ Start websocket server
 ==
 
 To start the server, run this command
-        ``php bin/console ps:ws:spawn``
+        ``php bin/console ip:ws:spawn``
 

@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class SpawnCommand extends Command
 {
-    protected static $defaultName = 'ps:ws:spawn';
+    protected static $defaultName = 'ip:ws:spawn';
 
     /**
      * @var string
