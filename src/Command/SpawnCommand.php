@@ -35,8 +35,8 @@ class SpawnCommand extends Command
 
     public function __construct(
         TopicManager $topicManager,
-        string $wsHost = '127.0.0.1',
-        int $wsPort = 8080,
+        string $wsHost,
+        int $wsPort,
         string $name = null
     ) {
         parent::__construct($name);

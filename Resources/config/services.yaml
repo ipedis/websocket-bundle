@@ -14,3 +14,8 @@ services:
   Ipedis\Bundle\Websocket\Service\Topic\TopicManager:
     arguments:
       $channels: !tagged ps.websocket_channel
+
+  Ipedis\Bundle\Websocket\Command\SpawnCommand:
+    arguments:
+      $wsHost: '%websocket_host%'
+      $wsPort: '%websocket_port%'
