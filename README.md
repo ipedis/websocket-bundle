@@ -1,4 +1,3 @@
-TO BE COMPLETED
 # README #
 
 ***Global goal***
@@ -78,8 +77,9 @@ Get Started: Publish and Subscribe.
 Create service like following: 
     
     use Ipedis\Bundle\Websocket\Channel\Contract\ChannelInterface;
+    use Ipedis\Bundle\Websocket\Channel\ChannelAbstract;
     
-    class YouChannel implements ChannelInterface
+    class YouChannel extends ChannelAbstract implements ChannelInterface
     {
        ...
     }
