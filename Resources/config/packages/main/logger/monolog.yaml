@@ -1,9 +1,0 @@
-monolog:
-  channels: ["websocket"]
-
-  handlers:
-    websocket:
-      level: debug
-      type:  stream
-      path:  "%kernel.logs_dir%/websocket.log"
-      channels: ["websocket"]

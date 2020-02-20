@@ -29,7 +29,7 @@ Update `composer.json` and add a repository:
 Require the library:
 
     "require": {
-        "ipedis/websocket-bundle": "^1.0.0"
+        "ipedis/websocket-bundle": "dev-master"
     }
 
 ----
