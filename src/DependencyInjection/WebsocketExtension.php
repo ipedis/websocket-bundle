@@ -19,6 +19,8 @@ class WebsocketExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
         $container->setParameter('ipedis_websocket', $config['connection']);
+        $container->setParameter('websocket_host', $config['connection']['websocket_host']);
+        $container->setParameter('websocket_port', $config['connection']['websocket_port']);
 
         $loader = new YamlFileLoader(
             $container,

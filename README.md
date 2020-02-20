@@ -47,10 +47,10 @@ on `config/packages` folder, create yaml configuration like following:
         websocket_host: 127.0.0.1
         websocket_port: 8081
         websocket_remote_protocol: ws
-
-create channel and handler `websocket` for monolog:
     
 *all configurations have default value so there are all optional*
+
+create channel and handler `websocket` for monolog:
 
     monolog:
       channels: [YOUR_EXISTINGS_CHANNELS..., "websocket"]
