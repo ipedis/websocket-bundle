@@ -5,8 +5,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Ipedis\Bundle\Websocket\Service\Logger\WebsocketEventLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
+use Ratchet\Wamp\WampServerInterface;
 
-class TopicManager
+class TopicManager implements WampServerInterface
 {
     const PING_TOPIC = 'ping';
 
@@ -132,7 +133,7 @@ class TopicManager
      */
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        $this->logger->writeError(sprintf('Websocket got error: %s', $e));
+        $this->logger->writeError(sprintf('Websocket got error: %s', $e->getMessage()));
     }
 
     /**

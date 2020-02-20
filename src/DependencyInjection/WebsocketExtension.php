@@ -2,10 +2,12 @@
 namespace Ipedis\Bundle\Websocket\DependencyInjection;
 
 use Ipedis\Bundle\Websocket\Channel\Contract\ChannelInterface;
+use Ipedis\Bundle\Websocket\Service\Topic\TopicManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 class WebsocketExtension extends Extension
 {
@@ -26,11 +28,24 @@ class WebsocketExtension extends Extension
         $loader->load('services.yaml');
 
         $this->addWebsocketChannelTag($container);
+        $this->injectTaggedChannelService($container);
     }
 
     public function getAlias()
     {
         return 'ipedis_websocket';
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    protected function injectTaggedChannelService(ContainerBuilder $container)
+    {
+        $definition = $container->findDefinition(TopicManager::class);
+        $taggedWorkers = $container->findTaggedServiceIds('ps.websocket_channel');
+        foreach ($taggedWorkers as $id => $tags) {
+            $definition->addMethodCall('addChannel', [new Reference($id)]);
+        }
     }
 
     /**
