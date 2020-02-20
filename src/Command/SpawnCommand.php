@@ -1,5 +1,5 @@
 <?php
-
+namespace Ipedis\Bundle\Websocket\Command;
 
 use Ipedis\Bundle\Websocket\Service\Topic\TopicManager;
 use Ratchet\Http\HttpServer;
