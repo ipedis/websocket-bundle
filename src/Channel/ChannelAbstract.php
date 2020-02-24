@@ -2,6 +2,7 @@
 
 namespace Ipedis\Bundle\Websocket\Channel;
 
+use Ratchet\ConnectionInterface;
 use Ratchet\ConnectionInterface as Conn;
 use Ratchet\Wamp\Topic;
 
@@ -137,5 +138,10 @@ abstract class ChannelAbstract
     protected function hasMatch(string $pattern, string $target): bool
     {
         return preg_match(sprintf('#%s#', $pattern), $target);
+    }
+
+    protected function onClose(ConnectionInterface $connection)
+    {
+        //By default do nothing
     }
 }

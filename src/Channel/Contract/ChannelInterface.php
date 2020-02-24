@@ -36,4 +36,11 @@ interface ChannelInterface
      * @return mixed
      */
     public function onSubscribe(Conn $conn, Topic $topic);
+
+    /**Executed when user close connection
+     *
+     * @param Conn $connection
+     * @return mixed
+     */
+    public function onClose(Conn $connection);
 }

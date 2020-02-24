@@ -3,6 +3,7 @@ namespace Ipedis\Bundle\Websocket\Service\Topic;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ipedis\Bundle\Websocket\Channel\ChannelRegistry;
+use Ipedis\Bundle\Websocket\Channel\Contract\ChannelInterface;
 use Ipedis\Bundle\Websocket\Exception\ChannelNotFoundException;
 use Ipedis\Bundle\Websocket\Service\Logger\WebsocketEventLogger;
 use Ratchet\ConnectionInterface;
@@ -176,6 +177,10 @@ class TopicManager implements WampServerInterface
      */
     public function onClose(ConnectionInterface $conn)
     {
+        /** @var ChannelInterface $channel */
+        foreach ($this->registry->getChannels() as $channel) {
+            $channel->onClose($conn);
+        }
     }
 
     /**
