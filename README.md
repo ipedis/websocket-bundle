@@ -1,4 +1,3 @@
-TO BE COMPLETED
 # README #
 
 ***Global goal***
@@ -30,7 +29,7 @@ Update `composer.json` and add a repository:
 Require the library:
 
     "require": {
-        "ipedis/websocket-bundle": "^1.0.0"
+        "ipedis/websocket-bundle": "dev-master"
     }
 
 ----
@@ -78,8 +77,9 @@ Get Started: Publish and Subscribe.
 Create service like following: 
     
     use Ipedis\Bundle\Websocket\Channel\Contract\ChannelInterface;
+    use Ipedis\Bundle\Websocket\Channel\ChannelAbstract;
     
-    class YouChannel implements ChannelInterface
+    class YouChannel extends ChannelAbstract implements ChannelInterface
     {
        ...
     }
@@ -92,5 +92,5 @@ Start websocket server
 ==
 
 To start the server, run this command
-        ``php bin/console ps:ws:spawn``
+        ``php bin/console ip:ws:spawn``
 
