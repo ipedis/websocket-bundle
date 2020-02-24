@@ -11,7 +11,7 @@ services:
     arguments:
       $logger: '@monolog.logger.websocket'
 
-  Ipedis\Bundle\Websocket\Service\Topic\TopicManager:
+  Ipedis\Bundle\Websocket\Channel\ChannelRegistry:
     arguments:
       $channels: !tagged ps.websocket_channel
 

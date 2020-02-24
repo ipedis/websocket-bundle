@@ -11,6 +11,11 @@ class ChannelRegistry
     /** @var iterable */
     private $channels;
 
+    public function __construct(iterable $channels)
+    {
+        $this->channels = $channels;
+    }
+
     public function addChannel(ChannelInterface $channel)
     {
         $this->channels->add($channel);
