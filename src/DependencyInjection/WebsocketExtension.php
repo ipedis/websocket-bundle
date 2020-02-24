@@ -1,6 +1,7 @@
 <?php
 namespace Ipedis\Bundle\Websocket\DependencyInjection;
 
+use Ipedis\Bundle\Websocket\Channel\ChannelRegistry;
 use Ipedis\Bundle\Websocket\Channel\Contract\ChannelInterface;
 use Ipedis\Bundle\Websocket\Service\Topic\TopicManager;
 use Symfony\Component\Config\FileLocator;
@@ -43,7 +44,7 @@ class WebsocketExtension extends Extension
      */
     protected function injectTaggedChannelService(ContainerBuilder $container)
     {
-        $definition = $container->findDefinition(TopicManager::class);
+        $definition = $container->findDefinition(ChannelRegistry::class);
         $taggedWorkers = $container->findTaggedServiceIds('ps.websocket_channel');
         foreach ($taggedWorkers as $id => $tags) {
             $definition->addMethodCall('addChannel', [new Reference($id)]);

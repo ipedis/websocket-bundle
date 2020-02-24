@@ -2,6 +2,8 @@
 namespace Ipedis\Bundle\Websocket\Service\Topic;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Ipedis\Bundle\Websocket\Channel\ChannelRegistry;
+use Ipedis\Bundle\Websocket\Exception\ChannelNotFoundException;
 use Ipedis\Bundle\Websocket\Service\Logger\WebsocketEventLogger;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
@@ -12,9 +14,9 @@ class TopicManager implements WampServerInterface
     const PING_TOPIC = 'ping';
 
     /**
-     * @var iterable
+     * @var ChannelRegistry
      */
-    protected $channels;
+    protected $registry;
 
     /**
      * @var WebsocketEventLogger
@@ -27,12 +29,12 @@ class TopicManager implements WampServerInterface
     protected $em;
 
     public function __construct(
-        iterable $channels,
+        ChannelRegistry $channelRegistry,
         WebsocketEventLogger $logger,
         EntityManagerInterface $em
     ) {
         $this->em = $em;
-        $this->channels = $channels;
+        $this->registry = $channelRegistry;
         $this->logger = $logger;
     }
 
@@ -53,22 +55,21 @@ class TopicManager implements WampServerInterface
          * Log incoming request
          */
         $this->logger->writeInfo(sprintf('Received subscribe request for topic {%s}', $topic->getId()));
-
-        foreach ($this->channels as $channel) {
+        try {
             /*
-             * Delegate responsibility to channels matching topic id
+             * Get channel where to subscribe for the topic
              */
-            if (preg_match(sprintf('#%s#', $channel->getBasePattern()), $topic->getId())) {
-                /*
-                 * Persist subscriber
-                 */
-                $channel->persistTopic($topic->getId(), $topic);
-
-                /*
-                 * Delegate logic to channel
-                 */
-                $channel->onSubscribe($conn, $topic);
-            }
+            $channel = $this->registry->getChannelForPattern($topic->getId());
+            /*
+             * Persist topic
+             */
+            $channel->persistTopic($topic->getId(), $topic);
+            /*
+             * process subscribe
+             */
+            $channel->onSubscribe($conn, $topic);
+        } catch (ChannelNotFoundException $exception) {
+            $this->logger->writeError($exception->getMessage());
         }
     }
 
@@ -112,13 +113,18 @@ class TopicManager implements WampServerInterface
             $payload = json_decode($event, true);
         }
 
-        foreach ($this->channels as $channel) {
+        try {
             /*
-             * Delegate responsibility to channels matching topic id
+             * Get the appropriated channel
              */
-            if (preg_match(sprintf('#%s#', $channel->getBasePattern()), $topic->getId())) {
-                $channel->onPublish($conn, $topic, $payload);
-            }
+            $channel = $this->registry->getChannelForPattern($topic->getId());
+
+            /*
+             * Execute onpublish process
+             */
+            $channel->onPublish($conn, $topic, $payload);
+        } catch (ChannelNotFoundException $exception) {
+            $this->logger->writeError($exception->getMessage());
         }
     }
 
