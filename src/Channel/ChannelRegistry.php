@@ -37,4 +37,12 @@ class ChannelRegistry
 
         throw new ChannelNotFoundException(sprintf('Channel with pattern %s not found', $pattern));
     }
+
+    /**
+     * @return iterable
+     */
+    public function getChannels()
+    {
+        return $this->channels;
+    }
 }
