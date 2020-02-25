@@ -1,0 +1,21 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Ipedis\Bundle\Websocket\:
+    resource: '../../src/*'
+    exclude: '../../src/{DependencyInjection}'
+
+  Ipedis\Bundle\Websocket\Service\Logger\WebsocketEventLogger:
+    arguments:
+      $logger: '@monolog.logger.websocket'
+
+  Ipedis\Bundle\Websocket\Channel\ChannelRegistry:
+    arguments:
+      $channels: !tagged ps.websocket_channel
+
+  Ipedis\Bundle\Websocket\Command\SpawnCommand:
+    arguments:
+      $wsHost: '%websocket_host%'
+      $wsPort: '%websocket_port%'
