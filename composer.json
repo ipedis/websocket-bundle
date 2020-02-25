@@ -1,5 +1,5 @@
 {
-  "name": "ipedis/websocket-client-bundle",
+  "name": "ipedis/websocket-bundle",
   "description": "Symfony bundle for websocket usage on publispeak",
   "type": "library",
   "authors": [
