@@ -143,7 +143,7 @@ abstract class ChannelAbstract
     /**
      * @param Conn $connection
      */
-    protected function onClose(ConnectionInterface $connection)
+    public function onClose(ConnectionInterface $connection)
     {
         //By default do nothing
     }
@@ -152,7 +152,7 @@ abstract class ChannelAbstract
      * @param Conn $connection
      * @param \Exception $exception
      */
-    protected function onError(ConnectionInterface $connection, \Exception $exception)
+    public function onError(ConnectionInterface $connection, \Exception $exception)
     {
         //By default, do nothing
     }
