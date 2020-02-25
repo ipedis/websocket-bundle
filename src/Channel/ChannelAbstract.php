@@ -140,8 +140,20 @@ abstract class ChannelAbstract
         return preg_match(sprintf('#%s#', $pattern), $target);
     }
 
+    /**
+     * @param Conn $connection
+     */
     protected function onClose(ConnectionInterface $connection)
     {
         //By default do nothing
+    }
+
+    /**
+     * @param Conn $connection
+     * @param \Exception $exception
+     */
+    protected function onError(ConnectionInterface $connection, \Exception $exception)
+    {
+        //By default, do nothing
     }
 }

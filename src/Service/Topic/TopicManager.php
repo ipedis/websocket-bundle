@@ -140,6 +140,9 @@ class TopicManager implements WampServerInterface
      */
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
+        foreach ($this->registry->getChannels() as $channel) {
+            $channel->onError($conn, $e);
+        }
         $this->logger->writeError(sprintf('Websocket got error: %s', $e->getMessage()));
     }
 
