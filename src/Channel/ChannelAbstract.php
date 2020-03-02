@@ -111,7 +111,7 @@ abstract class ChannelAbstract
         if (!empty($info['status'])) {
             $payload['status'] = $info['status'];
         } else {
-            $payload['status'] = ($isError) ? 'Error' : 'Success';
+            $payload['status'] = ($isError) ? 'error' : 'success';
         }
 
         /*
