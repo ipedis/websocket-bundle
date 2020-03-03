@@ -29,7 +29,7 @@ Update `composer.json` and add a repository:
 Require the library:
 
     "require": {
-        "ipedis/websocket-bundle": "dev-master"
+        "ipedis/websocket-bundle": "^1.0.0"
     }
 
 ----
@@ -41,11 +41,8 @@ on `config/packages` folder, create yaml configuration like following:
 
     ipedis_websocket:
       connection:
-        websocket_remote_host: localhost
-        websocket_remote_port: 8081
         websocket_host: 127.0.0.1
         websocket_port: 8081
-        websocket_remote_protocol: ws
     
 *all configurations have default value so there are all optional*
 
