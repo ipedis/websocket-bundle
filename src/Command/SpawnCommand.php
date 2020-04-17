@@ -1,8 +1,8 @@
 <?php
 namespace Ipedis\Bundle\Websocket\Command;
 
+use Ipedis\Bundle\Websocket\Service\Server\HttpServer;
 use Ipedis\Bundle\Websocket\Service\Topic\TopicManager;
-use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\Wamp\WampServer;
 use Ratchet\WebSocket\WsServer;
