@@ -203,7 +203,7 @@ class TopicManager implements WampServerInterface
     {
         $this->logger->writeInfo(sprintf('Database connection status %s', $this->em->getConnection()->isConnected()));
 
-        if (false === $this->em->getConnection()->ping()) {
+        if (false === $this->em->getConnection()->isConnected()) {
             $this->em->getConnection()->close();
             $this->em->getConnection()->connect();
 
