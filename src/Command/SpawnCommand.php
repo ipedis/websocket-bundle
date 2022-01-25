@@ -6,8 +6,8 @@ use Ipedis\Bundle\Websocket\Service\Topic\TopicManager;
 use Ratchet\Server\IoServer;
 use Ratchet\Wamp\WampServer;
 use Ratchet\WebSocket\WsServer;
-use React\EventLoop\Factory;
-use React\Socket\Server;
+use React\EventLoop\Loop;
+use React\Socket\SocketServer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -61,13 +61,13 @@ class SpawnCommand extends Command
         /**
          *  Event Loop.
          */
-        $eventLoop = Factory::create();
+        $eventLoop = Loop::get();
 
         /**
          * Websocket server to handle the websocket.
          */
-        $websocketServer = new Server(
-            sprintf('%s:%s', $this->wsHost, $this->wsPort),
+        $websocketServer = new SocketServer(
+            sprintf('%s:%s', $this->wsHost, $this->wsPort), [],
             $eventLoop
         );
 
