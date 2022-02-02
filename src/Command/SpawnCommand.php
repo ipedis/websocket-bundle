@@ -21,17 +21,17 @@ class SpawnCommand extends Command
     /**
      * @var string
      */
-    protected $wsHost;
+    protected string $wsHost;
 
     /**
      * @var int
      */
-    protected $wsPort;
+    protected int $wsPort;
 
     /**
      * @var TopicManager
      */
-    protected $topicManager;
+    protected TopicManager $topicManager;
 
     public function __construct(
         TopicManager $topicManager,
@@ -52,7 +52,7 @@ class SpawnCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 

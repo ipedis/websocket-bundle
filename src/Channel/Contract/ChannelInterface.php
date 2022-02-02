@@ -25,7 +25,7 @@ interface ChannelInterface
      *
      * @return mixed
      */
-    public function onPublish(Conn $conn, Topic $topic, array $payload);
+    public function onPublish(Conn $conn, Topic $topic, array $payload): mixed;
 
     /**
      * Executed when a subscriber joins a channel.
@@ -35,12 +35,12 @@ interface ChannelInterface
      *
      * @return mixed
      */
-    public function onSubscribe(Conn $conn, Topic $topic);
+    public function onSubscribe(Conn $conn, Topic $topic): mixed;
 
     /**Executed when user close connection
      *
      * @param Conn $connection
      * @return mixed
      */
-    public function onClose(Conn $connection);
+    public function onClose(Conn $connection): mixed;
 }

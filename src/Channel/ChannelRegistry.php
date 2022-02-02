@@ -9,7 +9,7 @@ use Ipedis\Bundle\Websocket\Exception\ChannelNotFoundException;
 class ChannelRegistry
 {
     /** @var iterable */
-    private $channels;
+    private iterable $channels;
 
     public function __construct(iterable $channels)
     {
@@ -41,7 +41,7 @@ class ChannelRegistry
     /**
      * @return iterable
      */
-    public function getChannels()
+    public function getChannels(): iterable
     {
         return $this->channels;
     }

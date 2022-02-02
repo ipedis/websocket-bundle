@@ -34,7 +34,7 @@ class WebsocketExtension extends Extension
         $this->injectTaggedChannelService($container);
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'ipedis_websocket';
     }
