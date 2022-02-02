@@ -11,7 +11,7 @@ class WebsocketEventLogger
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger)
     {

@@ -17,17 +17,17 @@ class TopicManager implements WampServerInterface
     /**
      * @var ChannelRegistry
      */
-    protected $registry;
+    protected ChannelRegistry $registry;
 
     /**
      * @var WebsocketEventLogger
      */
-    protected $logger;
+    protected WebsocketEventLogger $logger;
 
     /**
      * @var EntityManagerInterface
      */
-    protected $em;
+    protected EntityManagerInterface $em;
 
     public function __construct(
         ChannelRegistry $channelRegistry,

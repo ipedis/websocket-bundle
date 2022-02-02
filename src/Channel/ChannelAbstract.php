@@ -14,7 +14,7 @@ abstract class ChannelAbstract
     /**
      * @var array
      */
-    protected $topics = [];
+    protected array $topics = [];
 
     /**
      * Track topic.
@@ -104,7 +104,7 @@ abstract class ChannelAbstract
      *
      * @return array
      */
-    protected function craftMessage($topicId, $info, $isError = false): array
+    protected function craftMessage($topicId, $info, bool $isError = false): array
     {
         $payload = [];
 
