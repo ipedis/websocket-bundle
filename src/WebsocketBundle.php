@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Ipedis\Bundle\Websocket;
 
 use Ipedis\Bundle\Websocket\DependencyInjection\WebsocketExtension;
@@ -9,7 +12,7 @@ class WebsocketBundle extends Bundle
 {
     public function getContainerExtension(): ?ExtensionInterface
     {
-        if ($this->extension === null) {
+        if (null === $this->extension) {
             $this->extension = new WebsocketExtension();
         }
 

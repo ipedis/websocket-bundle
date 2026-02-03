@@ -1,7 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Ipedis\Bundle\Websocket\Exception;
 
-class ChannelNotFoundException extends \Exception
-{
+use Exception;
 
+class ChannelNotFoundException extends Exception
+{
 }

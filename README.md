@@ -31,6 +31,13 @@ Require the library:
     "require": {
         "ipedis/websocket-bundle": "^1.0.0"
     }
+----
+For Php >=8.2 and Symfony >= 6.4 
+
+    "require": {
+        "ipedis/websocket-bundle": "^2.0.0"
+    }
+
 
 ----
 
