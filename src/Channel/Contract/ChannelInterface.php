@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ipedis\Bundle\Websocket\Channel\Contract;
 
+use Exception;
 use Ratchet\ConnectionInterface as Conn;
 use Ratchet\Wamp\Topic;
 
@@ -18,7 +19,14 @@ interface ChannelInterface
     public function getBasePattern(): string;
 
     /**
+     * Track topic.
+     */
+    public function persistTopic(string $id, Topic $topic): void;
+
+    /**
      * Executed when a message is published from a subscriber.
+     *
+     * @param array<string, mixed> $payload
      */
     public function onPublish(Conn $conn, Topic $topic, array $payload): void;
 
@@ -27,9 +35,13 @@ interface ChannelInterface
      */
     public function onSubscribe(Conn $conn, Topic $topic): void;
 
-    /**Executed when user close connection
-     *
-     * @param Conn $connection
+    /**
+     * Executed when user close connection.
      */
     public function onClose(Conn $connection): void;
+
+    /**
+     * Executed when an error occurs.
+     */
+    public function onError(Conn $connection, Exception $exception): void;
 }

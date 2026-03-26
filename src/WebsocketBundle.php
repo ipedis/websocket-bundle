@@ -16,6 +16,10 @@ class WebsocketBundle extends Bundle
             $this->extension = new WebsocketExtension();
         }
 
-        return $this->extension;
+        if ($this->extension instanceof ExtensionInterface) {
+            return $this->extension;
+        }
+
+        return null;
     }
 }

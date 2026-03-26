@@ -140,3 +140,10 @@ modules.xml
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/linux,macos,composer,phpstorm+all
+
+### QA Tools ###
+.phpunit.cache/
+.phpstan/
+coverage/
+.php-cs-fixer.cache
+.php_cs.cache

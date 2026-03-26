@@ -9,13 +9,22 @@ use Ipedis\Bundle\Websocket\Exception\ChannelNotFoundException;
 
 class ChannelRegistry
 {
-    public function __construct(private readonly iterable $channels)
+    /** @var array<int, ChannelInterface> */
+    private array $channels = [];
+
+    /**
+     * @param iterable<ChannelInterface> $channels
+     */
+    public function __construct(iterable $channels = [])
     {
+        foreach ($channels as $channel) {
+            $this->channels[] = $channel;
+        }
     }
 
     public function addChannel(ChannelInterface $channel): void
     {
-        $this->channels->add($channel);
+        $this->channels[] = $channel;
     }
 
     /**
@@ -34,7 +43,10 @@ class ChannelRegistry
         throw new ChannelNotFoundException(sprintf('Channel with pattern %s not found', $pattern));
     }
 
-    public function getChannels(): iterable
+    /**
+     * @return array<int, ChannelInterface>
+     */
+    public function getChannels(): array
     {
         return $this->channels;
     }
