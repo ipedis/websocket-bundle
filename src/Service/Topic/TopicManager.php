@@ -7,7 +7,6 @@ namespace Ipedis\Bundle\Websocket\Service\Topic;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Ipedis\Bundle\Websocket\Channel\ChannelRegistry;
-use Ipedis\Bundle\Websocket\Channel\Contract\ChannelInterface;
 use Ipedis\Bundle\Websocket\Exception\ChannelNotFoundException;
 use Ipedis\Bundle\Websocket\Service\Logger\WebsocketEventLogger;
 use Ratchet\ConnectionInterface;
@@ -29,84 +28,63 @@ class TopicManager implements WampServerInterface
      */
     public function onSubscribe(ConnectionInterface $conn, $topic): void
     {
-        /*
-         * Refresh connection if timeout
-         */
+        if (!$topic instanceof Topic) {
+            return;
+        }
+
         $this->refreshDbConnection();
 
-        /*
-         * Log incoming request
-         */
         $this->logger->writeInfo(sprintf('Received subscribe request for topic {%s}', $topic->getId()));
         try {
-            /*
-             * Get channel where to subscribe for the topic
-             */
             $channel = $this->registry->getChannelForPattern($topic->getId());
-            /*
-             * Persist topic
-             */
             $channel->persistTopic($topic->getId(), $topic);
-            /*
-             * process subscribe
-             */
             $channel->onSubscribe($conn, $topic);
-        } catch (ChannelNotFoundException $exception) {
-            $this->logger->writeError($exception->getMessage());
+        } catch (ChannelNotFoundException $channelNotFoundException) {
+            $this->logger->writeError($channelNotFoundException->getMessage());
         }
     }
 
     /**
      * A client is attempting to publish content to a subscribed connections on a URI.
      *
-     * @param string|Topic $topic    The topic the user has attempted to publish to
-     * @param string       $event    Payload of the publish
-     * @param array        $exclude  A list of session IDs the message should be excluded from (blacklist)
-     * @param array        $eligible A list of session Ids the message should be send to (whitelist)
+     * @param string|Topic $topic The topic the user has attempted to publish to
+     * @param mixed $event Payload of the publish
+     * @param array<string> $exclude A list of session IDs the message should be excluded from (blacklist)
+     * @param array<string> $eligible A list of session Ids the message should be send to (whitelist)
      */
     public function onPublish(ConnectionInterface $conn, $topic, $event, array $exclude, array $eligible): void
     {
-        /*
-         * Refresh connection if timeout
-         */
+        if (!$topic instanceof Topic) {
+            return;
+        }
+
         $this->refreshDbConnection();
 
-        /*
-         * Log incoming request
-         */
         $this->logger->writeInfo(sprintf('Received publish request for topic {%s}', $topic->getId()));
 
-        /*
-         * Pinging websocket to keep connection alive
-         */
         if (self::PING_TOPIC === $topic->getId()) {
-            // Ping
+            /** @phpstan-ignore method.notFound */
             $conn->event($topic->getId(), json_encode(['message' => 'pong']));
 
             return;
         }
 
-        /*
-         * Transform event payload to array.
-         */
-        if (is_array($event)) {  // Front send array of string we he want to regenerate.
+        if (is_array($event)) {
+            /** @var array<string, mixed> $payload */
             $payload = $event;
-        } else { // Worker send json string.
-            $payload = json_decode($event, true);
+        } elseif (is_string($event)) {
+            $decoded = json_decode($event, true);
+            /** @var array<string, mixed> $payload */
+            $payload = is_array($decoded) ? $decoded : [];
+        } else {
+            $payload = [];
         }
 
         try {
-            /*
-             * Get the appropriated channel
-             */
             $channel = $this->registry->getChannelForPattern($topic->getId());
-
-            /*
-             * Execute onpublish process
-             */
             $channel->onPublish($conn, $topic, $payload);
-        } catch (ChannelNotFoundException $exception) {
-            $this->logger->writeError($exception->getMessage());
+        } catch (ChannelNotFoundException $channelNotFoundException) {
+            $this->logger->writeError($channelNotFoundException->getMessage());
         }
     }
 
@@ -121,18 +99,20 @@ class TopicManager implements WampServerInterface
         foreach ($this->registry->getChannels() as $channel) {
             $channel->onError($conn, $e);
         }
+
         $this->logger->writeError(sprintf('Websocket got error: %s', $e->getMessage()));
     }
 
     /**
      * An RPC call has been received.
      *
-     * @param string       $id     The unique ID of the RPC, required to respond to
-     * @param string|Topic $topic  The topic to execute the call against
-     * @param array        $params Call parameters received from the client
+     * @param string $id The unique ID of the RPC, required to respond to
+     * @param string|Topic $topic The topic to execute the call against
+     * @param array<mixed> $params Call parameters received from the client
      */
     public function onCall(ConnectionInterface $conn, $id, $topic, array $params): void
     {
+        /** @phpstan-ignore method.notFound */
         $conn->callError($id, $topic, 'RPC not supported');
     }
 
@@ -143,7 +123,7 @@ class TopicManager implements WampServerInterface
      *
      * @throws Exception
      */
-    public function onOpen(ConnectionInterface $conn)
+    public function onOpen(ConnectionInterface $conn): void
     {
     }
 
@@ -156,7 +136,6 @@ class TopicManager implements WampServerInterface
      */
     public function onClose(ConnectionInterface $conn): void
     {
-        /** @var ChannelInterface $channel */
         foreach ($this->registry->getChannels() as $channel) {
             $channel->onClose($conn);
         }
@@ -168,7 +147,7 @@ class TopicManager implements WampServerInterface
      *
      * @param string|Topic $topic The topic to unsubscribe from
      */
-    public function onUnSubscribe(ConnectionInterface $conn, $topic)
+    public function onUnSubscribe(ConnectionInterface $conn, $topic): void
     {
     }
 

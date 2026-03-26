@@ -2,28 +2,45 @@
 
 declare(strict_types=1);
 
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\Config\RectorConfig;
-use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
-use Rector\Symfony\Set\SymfonySetList;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
-use Rector\TypeDeclaration\Rector\Property\AddPropertyTypeDeclarationRector;
+use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
+use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
+use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
+use Rector\Php73\Rector\FuncCall\SetCookieRector;
+use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Symfony\CodeQuality\Rector\Class_\ControllerMethodInjectionToConstructorRector;
 
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/src',
-        __DIR__ . '/Resources',
+        __DIR__ . '/tests',
     ])
-    ->withRules([
-        InlineConstructorDefaultToPropertyRector::class,
-        AnnotationToAttributeRector::class,
-        AddPropertyTypeDeclarationRector::class,
-        AddReturnTypeDeclarationRector::class,
+    ->withPhpSets(
+        php82: true,
+    )
+    ->withPreparedSets(
+        deadCode: true,
+        codeQuality: true,
+        codingStyle: true,
+        typeDeclarations: true,
+        privatization: true,
+        naming: true,
+        instanceOf: true,
+        earlyReturn: true,
+        rectorPreset: true,
+        phpunitCodeQuality: true,
+        doctrineCodeQuality: true,
+        symfonyCodeQuality: true,
+        symfonyConfigs: true,
+    )
+    ->withSets(sets: [
+        PHPUnitSetList::PHPUNIT_120,
     ])
-    ->withPhpSets()
-    ->withComposerBased(phpunit: true, symfony: true)
-    ->withAttributesSets(symfony: true)
-    ->withSets([
-        SymfonySetList::SYMFONY_CODE_QUALITY,
-    ])
-;
+    ->withComposerBased(symfony: true)
+    ->withSkip([
+        RenamePropertyToMatchTypeRector::class,
+        RenameParamToMatchTypeRector::class,
+        RenameVariableToMatchMethodCallReturnTypeRector::class,
+        SetCookieRector::class,
+        ControllerMethodInjectionToConstructorRector::class,
+    ]);

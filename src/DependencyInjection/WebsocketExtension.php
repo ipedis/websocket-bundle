@@ -14,20 +14,23 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class WebsocketExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        $container->setParameter('ipedis_websocket', $config['connection']);
-        $container->setParameter('websocket_host', $config['connection']['websocket_host']);
-        $container->setParameter('websocket_port', $config['connection']['websocket_port']);
 
-        $loader = new YamlFileLoader(
+        /** @var array{websocket_host: string, websocket_port: int} $connection */
+        $connection = $config['connection'];
+        $container->setParameter('ipedis_websocket', $connection);
+        $container->setParameter('websocket_host', $connection['websocket_host']);
+        $container->setParameter('websocket_port', $connection['websocket_port']);
+
+        $yamlFileLoader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__ . '/../../Resources/config')
         );
 
-        $loader->load('services.yaml');
+        $yamlFileLoader->load('services.yaml');
 
         $this->addWebsocketChannelTag($container);
         $this->injectTaggedChannelService($container);
@@ -38,11 +41,11 @@ class WebsocketExtension extends Extension
         return 'ipedis_websocket';
     }
 
-    protected function injectTaggedChannelService(ContainerBuilder $container)
+    protected function injectTaggedChannelService(ContainerBuilder $container): void
     {
         $definition = $container->findDefinition(ChannelRegistry::class);
         $taggedWorkers = $container->findTaggedServiceIds('ps.websocket_channel');
-        foreach ($taggedWorkers as $id => $tags) {
+        foreach (array_keys($taggedWorkers) as $id) {
             $definition->addMethodCall('addChannel', [new Reference($id)]);
         }
     }
@@ -50,7 +53,7 @@ class WebsocketExtension extends Extension
     /**
      * Automatically add tag ps.websocket_channel for all class which implement ChannelInterface.
      */
-    protected function addWebsocketChannelTag(ContainerBuilder $containerBuilder)
+    protected function addWebsocketChannelTag(ContainerBuilder $containerBuilder): void
     {
         $containerBuilder->registerForAutoconfiguration(ChannelInterface::class)
             ->addTag('ps.websocket_channel');

@@ -12,29 +12,33 @@ class WebsocketEventLogger
     {
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function writeError(string $message, array $context = []): void
     {
         $this->logger->error($message, $context);
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function writeInfo(string $message, array $context = []): void
     {
         $this->logger->info($message, $context);
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function writeDebug(string $message, array $context = []): void
     {
         $this->logger->info($message, $context);
     }
 
     /**
-     * Get channel log from logger.
+     * @param array<string, mixed> $context
      */
-    protected function getChannel(): string
-    {
-        return $this->logger->getName();
-    }
-
     public function writeLog(string $level, string $message, array $context = []): void
     {
         $this->logger->log($level, $message, $context);

@@ -31,9 +31,9 @@ class SpawnCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $io->title('Websocket spawner');
+        $symfonyStyle->title('Websocket spawner');
 
         /**
          *  Event Loop.
@@ -43,8 +43,9 @@ class SpawnCommand extends Command
         /**
          * Websocket server to handle the websocket.
          */
-        $websocketServer = new SocketServer(
-            sprintf('%s:%s', $this->wsHost, $this->wsPort), [],
+        $socketServer = new SocketServer(
+            sprintf('%s:%s', $this->wsHost, $this->wsPort),
+            [],
             $eventLoop
         );
 
@@ -60,13 +61,13 @@ class SpawnCommand extends Command
             new HttpServer(
                 new WsServer($wampServer)
             ),
-            $websocketServer,
+            $socketServer,
             $eventLoop
         );
 
         $ioServer->run();
 
-        $io->success('websocket is stopped');
+        $symfonyStyle->success('websocket is stopped');
 
         return Command::SUCCESS;
     }

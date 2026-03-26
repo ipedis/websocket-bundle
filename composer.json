@@ -1,33 +1,54 @@
 {
-  "name": "ipedis/websocket-bundle",
-  "description": "Symfony bundle for websocket usage on publispeak",
-  "type": "library",
-  "authors": [
-    {
-      "name": "gabriel",
-      "email": "gabriel@ipedis.com"
+    "name": "ipedis/websocket-bundle",
+    "description": "Symfony bundle for websocket usage on publispeak",
+    "type": "library",
+    "authors": [
+        {
+            "name": "gabriel",
+            "email": "gabriel@ipedis.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.2",
+        "symfony/dependency-injection": "^6.4|^7.0",
+        "symfony/config": "^6.4|^7.0",
+        "symfony/console": "^6.4|^7.0",
+        "symfony/http-kernel": "^6.4|^7.0",
+        "cboden/ratchet": "^0.4",
+        "symfony/monolog-bundle": "^3.0|^4.0",
+        "doctrine/orm": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ipedis\\Bundle\\Websocket\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ipedis\\Bundle\\Websocket\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "rector/rector": "^2.3",
+        "phpunit/phpunit": "^11.5",
+        "phpstan/phpstan": "^2.1",
+        "laravel/pint": "^1.27",
+        "phpstan/phpstan-strict-rules": "^2.0"
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-html coverage",
+        "phpstan": "phpstan analyse --memory-limit 2024M",
+        "pint": "pint",
+        "pint:check": "pint --test",
+        "rector": "rector process",
+        "rector:check": "rector process --dry-run",
+        "qa": [
+            "@rector",
+            "@pint",
+            "@phpstan",
+            "@test"
+        ]
     }
-  ],
-  "minimum-stability": "stable",
-  "require": {
-    "php": ">= 8.2",
-    "symfony/dependency-injection": "^6.4|^7.0",
-    "symfony/config": "^6.4|^7.0",
-    "symfony/console": "^6.4|^7.0",
-    "symfony/http-kernel": "^6.4|^7.0",
-    "cboden/ratchet": "^0.4",
-    "symfony/monolog-bundle": "^3.0|^4.0",
-    "doctrine/orm": "^2.7"
-  },
-  "autoload": {
-    "psr-4": {
-      "Ipedis\\Bundle\\Websocket\\": "src/"
-    }
-  },
-  "repositories": [
-  ],
-  "require-dev": {
-    "rector/rector": "^2.3",
-    "laravel/pint": "^1.27"
-  }
 }
