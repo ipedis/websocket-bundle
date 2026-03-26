@@ -14,7 +14,7 @@ final class FakeWampConnection implements ConnectionInterface
     /** @var list<array{method: string, args: list<mixed>}> */
     public array $calls = [];
 
-    public function send($data): ConnectionInterface
+    public function send($data)
     {
         return $this;
     }
