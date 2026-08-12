@@ -2,6 +2,7 @@
     "name": "ipedis/websocket-bundle",
     "description": "Symfony bundle for websocket usage on publispeak",
     "type": "library",
+    "license": "CC-BY-1.0",
     "authors": [
         {
             "name": "gabriel",
