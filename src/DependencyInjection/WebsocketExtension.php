@@ -33,6 +33,7 @@ class WebsocketExtension extends Extension
         $this->addWebsocketChannelTag($container);
     }
 
+    #[\Override]
     public function getAlias(): string
     {
         return 'ipedis_websocket';

@@ -1,4 +1,4 @@
-FROM php:8.2-cli-alpine
+FROM php:8.3-cli-alpine
 
 RUN apk add --no-cache git unzip libxml2-dev oniguruma-dev linux-headers \
     && docker-php-ext-install dom xml mbstring sockets
